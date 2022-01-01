@@ -29,8 +29,8 @@ void main()
 {
 
 	double t = iterMandel(((dvec2(Coords.x, Coords.y))/zoom) - offset);
-//	double r = 9.48 * (1.0 - t) * t * t * t;
+	double r = 9.48 * (1.0 - t) * t * t * t;
 //	double g = 16.0 * (1.0 - t) * (1.0 - t) * t * t;
-//	double b = 9.48 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t;
-	FragColor = vec4(1-t, 1-t, 1-t, 1.0f);
+	double b = 9.48 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t;
+	FragColor = vec4(t-r, t, t-b, 1.0f);
 }

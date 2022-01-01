@@ -3,30 +3,28 @@
 
 void framebuffer_size_callback(GLFWwindow*, int, int);
 void process_input(GLFWwindow*);
+void dT();
+void countFPS(std::string& outStr);
+void cnum(std::string& cnum);
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
 
 int num_frames = 0;
-float last_time = 0.0f;
+int maxIters = 400;
+double last_time = 0.0;
+double lastFrame = 0.0;
+double currentFrame = 0.0;
+
+double delta = 0.0;
 
 double zoom = 0.0;
 double offset_x = 0.0;
 double offset_y = 0.0;
 
-const double delta = 0.03;
+std::string frametime;
+std::string complex_num;
 
-void countFPS()
-{
-	double current_time = glfwGetTime();
-	num_frames++;
-	if (current_time - last_time >= 1.0)
-	{
-		std::cout << 1000.0 / num_frames << "ms / frame\n";
-		num_frames = 0;
-		last_time += 1.0;
-	}
-}
 
 int main()
 {
@@ -80,19 +78,19 @@ int main()
 		glEnableVertexAttribArray(0);
 		
 		shader.use();
-		shader.setInt("maxIterations", 200);
+		shader.setInt("maxIterations", maxIters);
 		shader.setDouble("zoom", pow(2, zoom));
-		glUniform2d(glGetUniformLocation(shader.ID, "offset"), 0.0, 0.0);
+		glUniform2d(glGetUniformLocation(shader.ID, "offset"), offset_x, offset_y);
+		
 		while (!glfwWindowShouldClose(window))
 		{
 			process_input(window);
-
-			
-
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			countFPS();
-			//std::cout << zoom << std::endl;
+			dT();
+			countFPS(frametime);
+			cnum(complex_num);
+			glfwSetWindowTitle(window, ("Mandelbrot / " + frametime + " / " + complex_num).c_str());
 		
 			shader.use();
 			shader.setDouble("zoom", pow(2, zoom));
@@ -136,5 +134,34 @@ void process_input(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS)
 		zoom += 2 * delta;
 	if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS)
-		zoom -= 2 * delta;
+		zoom -= 10 * delta;
+}
+
+void dT()
+{
+	currentFrame = glfwGetTime();
+	delta = (currentFrame - lastFrame) / 2;
+	lastFrame = currentFrame;
+}
+
+void countFPS(std::string& outStr)
+{
+	num_frames++;
+	double dt = currentFrame - last_time;
+	if (dt >= 1.0)
+	{
+		outStr =
+			std::to_string(1000.0 / num_frames) + " ms - frame / " +
+			std::to_string(num_frames / (dt)) + " fps";
+		num_frames = 0;
+		last_time += 1.0;
+	}
+}
+
+void cnum(std::string &cnum)
+{
+	if (-offset_y > 0)
+		cnum = std::to_string(-offset_x) + "+" + std::to_string(-offset_y) + "i";
+	else if (-offset_y < 0)
+		cnum = std::to_string(-offset_x) + std::to_string(-offset_y) + "i";
 }
