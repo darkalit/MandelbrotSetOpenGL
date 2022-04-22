@@ -152,9 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers.h" />
-    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="shader.h" />
-    <ClInclude Include="VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\GitHub\OpenGLText\textBaker\arial_48.bin" />
