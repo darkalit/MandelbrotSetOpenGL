@@ -15,7 +15,7 @@ float lastY = SCR_HEIGHT / 2;
 bool mouseF = true;
 
 int num_frames = 0;
-int maxIters = 128;
+int maxIters = 128; //128
 double last_time = 0.0;
 double lastFrame = 0.0;
 double currentFrame = 0.0;
@@ -99,8 +99,6 @@ int main()
 	shader.setInt("maxIterations", maxIters);
 	shader.setDouble("zoom", pow(2, zoom));
 	glUniform2d(glGetUniformLocation(shader.ID, "offset"), offset_x, offset_y);
-	shader.setInt("coloringType", coloringType);
-	shader.setInt("fractalType", fractalType);
 		
 	while (!glfwWindowShouldClose(window))
 	{
@@ -121,6 +119,8 @@ int main()
 		shader.setDouble("zoom", pow(2, zoom));
 		glUniform2d(glGetUniformLocation(shader.ID, "offset"), offset_x, offset_y);
 		glUniform2d(glGetUniformLocation(shader.ID, "jnum"), jnum_x, jnum_y);
+		shader.setInt("coloringType", coloringType);
+		shader.setInt("fractalType", fractalType);
 		//glUniform2d(glGetUniformLocation(shader.ID, "jnum"), 0.7885 * cos(time), 0.7885 * sin(time));
 
 		glBindVertexArray(VAO);
@@ -163,7 +163,19 @@ void process_input(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS)
 		zoom -= zoom_speed * delta;
 
-	
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+		fractalType = 0;
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+		fractalType = 1;
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+		fractalType = 2;
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+		fractalType = 3;
+
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		coloringType = 0;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		coloringType = 1;
 }
 
 void mouseCallback(GLFWwindow* window, double xpos, double ypos)
